@@ -5,6 +5,7 @@
     'category': 'Distribución de insumos',
     'author': 'Alphaqueb Consulting SAS',
     'license': 'LGPL-3',
+    'icon': '/biotex_contract/static/description/icon.svg',
     'depends': ['biotex_base', 'biotex_catalog', 'sale_management', 'stock'],
     'data': [
         'security/ir.model.access.csv',
