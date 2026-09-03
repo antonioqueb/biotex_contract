@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <menuitem id="menu_contracts" name="Contratos" parent="biotex_base.menu_biotex_contracts" sequence="10" action="action_biotex_contract"/>
-    <menuitem id="menu_contract_lines" name="Avance por clave" parent="biotex_base.menu_biotex_contracts" sequence="20" action="action_biotex_contract_lines"/>
+    <menuitem id="menu_contract_root" name="Contratos" sequence="13" web_icon="biotex_contract,static/description/icon.png"
+              groups="biotex_base.group_biotex_delegation"/>
+    <menuitem id="menu_contracts" name="Contratos" parent="menu_contract_root" sequence="10" action="action_biotex_contract"/>
+    <menuitem id="menu_contract_lines" name="Avance por clave" parent="menu_contract_root" sequence="20" action="action_biotex_contract_lines"/>
+    <menuitem id="menu_contract_institutions" name="Instituciones y clientes" parent="menu_contract_root" sequence="30"
+              action="biotex_base.action_biotex_institutions"/>
 </odoo>

@@ -1,8 +1,8 @@
 {
-    'name': 'Biotex - Contratos',
+    'name': 'Contratos de suministro',
     'summary': 'Contratos por institución y razón social: claves, cantidades, precios, monto; avance por monto y por clave; alertas de saldo',
     'version': '19.0.1.0.0',
-    'category': 'Biotex',
+    'category': 'Distribución de insumos',
     'author': 'Alphaqueb Consulting SAS',
     'license': 'LGPL-3',
     'depends': ['biotex_base', 'biotex_catalog', 'sale_management', 'stock'],
