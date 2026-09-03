@@ -147,6 +147,7 @@ class BiotexContract(models.Model):
             if not c.line_ids and not c.amount_contract:
                 raise UserError('Capture las claves o el monto del contrato antes de activarlo.')
             c.state = 'active'
+        return True
 
     def action_close(self):
         self.write({'state': 'closed'})
