@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_contract_delegation,biotex.contract delegation,model_biotex_contract,biotex_base.group_biotex_delegation,1,0,0,0
+access_contract_coordinator,biotex.contract coordinator,model_biotex_contract,biotex_base.group_biotex_coordinator,1,1,1,0
+access_contract_direction,biotex.contract direction,model_biotex_contract,biotex_base.group_biotex_direction,1,1,1,1
+access_contract_line_delegation,biotex.contract.line delegation,model_biotex_contract_line,biotex_base.group_biotex_delegation,1,0,0,0
+access_contract_line_coordinator,biotex.contract.line coordinator,model_biotex_contract_line,biotex_base.group_biotex_coordinator,1,1,1,1
+access_contract_line_direction,biotex.contract.line direction,model_biotex_contract_line,biotex_base.group_biotex_direction,1,1,1,1

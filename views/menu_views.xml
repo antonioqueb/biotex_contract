@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_contracts" name="Contratos" parent="biotex_base.menu_biotex_contracts" sequence="10" action="action_biotex_contract"/>
+    <menuitem id="menu_contract_lines" name="Avance por clave" parent="biotex_base.menu_biotex_contracts" sequence="20" action="action_biotex_contract_lines"/>
+</odoo>
