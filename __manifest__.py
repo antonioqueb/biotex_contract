@@ -1,7 +1,7 @@
 {
     'name': 'Contratos de suministro',
     'summary': 'Contratos por institución y razón social: claves, cantidades, precios, monto; avance por monto y por clave; alertas de saldo',
-    'version': '19.0.1.0.0',
+    'version': '19.0.2.0.0',
     'category': 'Distribución de insumos',
     'author': 'Alphaqueb Consulting SAS',
     'license': 'LGPL-3',

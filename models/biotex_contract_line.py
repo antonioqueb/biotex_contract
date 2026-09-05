@@ -1,4 +1,6 @@
 from odoo import api, fields, models
+from odoo.exceptions import UserError, ValidationError
+from odoo.addons.biotex_base.models.integrity import lock_records
 
 
 class BiotexContractLine(models.Model):
@@ -13,6 +15,10 @@ class BiotexContractLine(models.Model):
     partner_id = fields.Many2one(related='contract_id.partner_id', store=True)
     state = fields.Selection(related='contract_id.state', store=True)
     sequence = fields.Integer(default=10)
+    part_number = fields.Char(string='Partida institucional')
+    institutional_version = fields.Char(string='Versión del catálogo institucional')
+    product_ids = fields.Many2many('product.product', string='Correspondencias de catálogo')
+    amount_applied = fields.Monetary(string='Aplicación administrativa', default=0, readonly=True)
     code = fields.Char(string='Clave institución', required=True, help='Clave del cuadro básico / partida licitada.')
     name = fields.Char(string='Descripción de la clave', required=True)
     product_id = fields.Many2one(
@@ -66,3 +72,24 @@ class BiotexContractLine(models.Model):
                     l.price_unit = l.contract_id.pricelist_id._get_product_price(l.product_id, l.product_qty or 1.0)
                 else:
                     l.price_unit = l.price_unit or l.product_id.list_price
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        parents = self.env['biotex.contract'].browse([v['contract_id'] for v in vals_list if v.get('contract_id')])
+        lock_records(parents)
+        if any(c.state != 'draft' for c in parents):
+            raise UserError('Los renglones confirmados requieren una modificación documentada.')
+        return super().create(vals_list)
+
+    def write(self, vals):
+        if set(vals) & {'contract_id', 'part_number', 'code', 'name', 'uom_id', 'product_id', 'product_ids', 'product_qty', 'price_unit'}:
+            lock_records(self.contract_id)
+            if any(c.state != 'draft' for c in self.contract_id):
+                raise UserError('Los renglones confirmados conservan su contenido y precio.')
+        return super().write(vals)
+
+    def unlink(self):
+        lock_records(self.contract_id)
+        if any(c.state != 'draft' for c in self.contract_id):
+            raise UserError('No se borran renglones del contrato confirmado.')
+        return super().unlink()

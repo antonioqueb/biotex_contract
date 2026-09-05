@@ -5,3 +5,5 @@ access_contract_direction,biotex.contract direction,model_biotex_contract,biotex
 access_contract_line_delegation,biotex.contract.line delegation,model_biotex_contract_line,biotex_base.group_biotex_delegation,1,0,0,0
 access_contract_line_coordinator,biotex.contract.line coordinator,model_biotex_contract_line,biotex_base.group_biotex_coordinator,1,1,1,1
 access_contract_line_direction,biotex.contract.line direction,model_biotex_contract_line,biotex_base.group_biotex_direction,1,1,1,1
+access_amendment_read,Modificaciones consulta,model_biotex_contract_amendment,biotex_base.group_biotex_delegation,1,0,0,0
+access_amendment_coordinator,Modificaciones registro,model_biotex_contract_amendment,biotex_base.group_biotex_coordinator,1,1,1,0
