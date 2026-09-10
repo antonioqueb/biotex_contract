@@ -42,7 +42,9 @@ class BiotexContract(models.Model):
         default='draft', tracking=True, index=True)
 
     hospital_ids = fields.Many2many('res.partner', string='Destinos autorizados', tracking=True)
-    external_ref = fields.Char(string='Folio externo / evento', tracking=True)
+    external_ref = fields.Char(
+        string='Folio externo / evento', tracking=True,
+        help='Folio de la licitación, adjudicación o evento. Se requiere para activar el contrato.')
     tax_basis = fields.Selection([('untaxed', 'Subtotal sin impuestos'), ('total', 'Total con impuestos')], default='untaxed', required=True, tracking=True)
     amendment_ids = fields.One2many('biotex.contract.amendment', 'contract_id', string='Modificaciones documentadas')
     effective_date_end = fields.Date(compute='_compute_effective_end')
@@ -162,8 +164,19 @@ class BiotexContract(models.Model):
         for c in self:
             if c.state == 'active':
                 continue
-            if c.state != 'draft' or not c.date_start or not c.date_end or not c.document_ids or not c.external_ref:
-                raise UserError('Complete vigencia real, folio externo y documentos adjudicados antes de activar.')
+            if c.state != 'draft':
+                raise UserError('Solo se puede activar un contrato en borrador.')
+            missing = []
+            if not c.date_start:
+                missing.append('Inicio de vigencia')
+            if not c.date_end:
+                missing.append('Fin de vigencia')
+            if not (c.external_ref or '').strip():
+                missing.append('Folio externo / evento')
+            if not c.document_ids:
+                missing.append('Documentos (contrato, fallo, anexos), en la pestaña Documentos y notas')
+            if missing:
+                raise UserError('Para activar el contrato, complete:\n- ' + '\n- '.join(missing))
             if not c.line_ids and not c.amount_contract:
                 raise UserError('Capture las claves o el monto del contrato antes de activarlo.')
             transition(c, {'state': 'active'})
