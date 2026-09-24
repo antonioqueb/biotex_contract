@@ -23,14 +23,20 @@ class TestContractActivation(TransactionCase):
     def setUp(self):
         super().setUp()
         year = date.today().year
-        self.contract = self.env['biotex.contract'].create({
+        values = {
             'name': 'TEST-ACTIVATION-REQUIREMENTS',
             'partner_id': self.partner.id,
             'date_start': date(year, 1, 1),
             'date_end': date(year, 12, 31),
             'external_ref': 'TEST-EVENT-001',
             'amount_contract': 100,
-        })
+        }
+        if 'lifecycle_enabled' in self.env['biotex.contract']._fields:
+            # Satisfy the optional extension so each test isolates its intended
+            # missing base requirement without bypassing institutional checks.
+            values.update(control_mode='amount', award_scope='open_amount',
+                          scope_source='Synthetic amount-only contract for activation tests')
+        self.contract = self.env['biotex.contract'].create(values)
         attachment = self.env['ir.attachment'].create({
             'name': 'test-activation.txt',
             'datas': base64.b64encode(b'Automated test fixture; rolls back.'),
@@ -105,7 +111,20 @@ class TestContractActivation(TransactionCase):
         self.assertEqual(self.contract.state, 'closed')
 
     def test_amount_or_lines_still_required(self):
+        if 'lifecycle_enabled' in self.contract._fields:
+            # Simulate a pre-upgrade contract; ordinary create/write deliberately
+            # cannot disable institutional controls for newly created contracts.
+            transition(self.contract, {'lifecycle_enabled': False})
         self.contract.amount_contract = 0
         with self.assertRaisesRegex(UserError, 'Capture las claves o el monto del contrato'):
+            self.contract.action_activate()
+        self.assertEqual(self.contract.state, 'draft')
+
+    def test_institutional_amount_still_required(self):
+        if 'lifecycle_enabled' not in self.contract._fields:
+            self.skipTest('Optional institutional lifecycle module is not installed')
+        self.assertTrue(self.contract.lifecycle_enabled)
+        self.contract.amount_contract = 0
+        with self.assertRaisesRegex(UserError, 'modalidad y límites mínimo/máximo'):
             self.contract.action_activate()
         self.assertEqual(self.contract.state, 'draft')
